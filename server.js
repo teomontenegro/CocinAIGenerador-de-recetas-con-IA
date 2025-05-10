@@ -10,6 +10,7 @@ app.use(express.static('public'));
 
 app.post('/receta', async (req, res) => {
   const { ingredientes } = req.body;
+
   const prompt = `Tengo estos ingredientes: ${ingredientes}. ¿Qué receta puedo hacer? Respondé con una receta paso a paso.`;
 
   try {
@@ -17,7 +18,7 @@ app.post('/receta', async (req, res) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer TU_API_KEY'
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
@@ -27,6 +28,7 @@ app.post('/receta', async (req, res) => {
 
     const data = await respuesta.json();
     const receta = data.choices?.[0]?.message?.content;
+
     res.json({ receta });
   } catch (error) {
     console.error('Error al generar receta:', error);
